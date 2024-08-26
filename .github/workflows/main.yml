@@ -12,14 +12,14 @@ jobs:
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            creds: ${{ secrets.SERVICE_PRINCIPAL }}
         
         - name: 'Build and push image'
           uses: azure/docker-login@v1
           with:
             login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
+            username: ${{ secrets.CLIENT_ID }}
+            password: ${{ secrets.CLIENT_SECRET }}
         - run: |
             docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
@@ -31,7 +31,7 @@ jobs:
             dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
             image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/sampleapp:${{ github.sha }}
             registry-login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            registry-username: ${{ secrets.REGISTRY_USERNAME }}
-            registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+            registry-username: ${{ secrets.CLIENT_ID }}
+            registry-password: ${{ secrets.CLIENT_SECRET }}
             name: aci-sampleapp
             location: 'west us'
